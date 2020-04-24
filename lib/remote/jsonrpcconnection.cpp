@@ -30,14 +30,14 @@ REGISTER_APIFUNCTION(SetLogPosition, log, &SetLogPositionHandler);
 static RingBuffer l_TaskStats (15 * 60);
 
 JsonRpcConnection::JsonRpcConnection(const String& identity, bool authenticated,
-	const Shared<AsioTlsStream>::Ptr& stream, ConnectionRole role)
-	: JsonRpcConnection(identity, authenticated, stream, role, IoEngine::Get().GetIoContext())
+	const Shared<AsioTlsStream>::Ptr& stream, ConnectionRole role, bool gzip)
+	: JsonRpcConnection(identity, authenticated, stream, role, gzip, IoEngine::Get().GetIoContext())
 {
 }
 
 JsonRpcConnection::JsonRpcConnection(const String& identity, bool authenticated,
-	const Shared<AsioTlsStream>::Ptr& stream, ConnectionRole role, boost::asio::io_context& io)
-	: m_Identity(identity), m_Authenticated(authenticated), m_Stream(stream), m_Role(role),
+	const Shared<AsioTlsStream>::Ptr& stream, ConnectionRole role, bool gzip, boost::asio::io_context& io)
+	: m_Identity(identity), m_Authenticated(authenticated), m_Stream(stream), m_Role(role), m_Gzip(gzip),
 	m_Timestamp(Utility::GetTime()), m_Seen(Utility::GetTime()), m_NextHeartbeat(0), m_IoStrand(io),
 	m_OutgoingMessagesQueued(io), m_WriterDone(io), m_ShuttingDown(false),
 	m_CheckLivenessTimer(io), m_HeartbeatTimer(io)
